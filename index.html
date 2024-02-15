@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <title>Carrinho de compras</title>
+</head>
+<body>
+   
+    <div id="carrinho">
+     <h2>Carrinho de compras </h2>
+     <ul id="lista-produtos"></ul>
+     <p>Total: R$ <span id="total"></span></p>
+   </div>
+
+   <div id="produtos">
+
+       <h2>Produtos</h2>
+       <ul>
+             <li data-nome="Produto 1" data-preco="10.00">Produto 1 - R$ 10.00<button class="adicionar">Adicionar</button></li>
+             <li data-nome="Produto 2" data-preco="20.00">Produto 2 - R$ 20.00<button class="adicionar">Adicionar</button></li>
+             <li data-nome="Produto 3" data-preco="30.00">Produto 3 - R$ 30.00<button class="adicionar">Adicionar</button></li>
+       </ul>
+
+   </div>
+
+   <script>
+    //adiciona um escutador de eventos em todo o documento html
+     document.addEventListener('DOMContentLoaded',function(){
+
+        //assumindo o controle dos elementos html
+        const listaProdutos = document.getElementById('lista-produtos');
+
+        const total = document.getElementById('total');
+
+        let carrinho = [];
+
+        //essa função e a construção da lista 
+        //ela recebe os dados e mostra na lista e mostra tambem soma o valor do carrinho 
+
+        function renderizarCarrinho(){
+
+            listaProdutos.innerHTML = '';
+            let totalCarrinho = 0;
+
+            //essa função recebe 2 parametros o produto eo o indice
+            carrinho.forEach((produto,index)=>{
+
+                //adicionando uma li a lista 
+                const item = document.createElement('li');
+
+                //preecendo o valores que vão aparecer no item da lista
+
+                item.innerHTML = `${produto.nome} - R$ ${produto.preco}<button class="remover" data-index="${index}">Remover</button>`;
+                
+                //adicionando o item que eu criei a lista de produtos 
+                listaProdutos.appendChild(item);
+
+                //adicionando o valor do produto ao valor total do carrinho 
+
+                totalCarrinho += produto.preco;
+
+            });
+
+            total.textContent = totalCarrinho.toFixed(2);            
+            
+        }
+
+
+        //função que adiciona o produto 
+        function adicionarProduto(nome,preco){
+            carrinho.push({nome,preco});
+            renderizarCarrinho();
+        }
+
+        //função que remove produto
+
+        function removerProduto(index){
+            carrinho.splice(index,1);
+            renderizarCarrinho();
+        }
+
+        //seleciona todos os li que pretencem a lista de produtos
+        document.querySelectorAll('#produtos li').forEach((item,index)=>{
+
+            item.querySelector('button.adicionar').addEventListener('click',()=>{
+
+                // quando ele faz nos fetch nos produtos os valores do data-no e data-preco 
+                //são passado para essas variaveis   
+                const nome = item.getAttribute('data-nome');
+                const preco = parseFloat(item.getAttribute('data-preco'));
+                adicionarProduto(nome,preco);
+                
+            })
+        });
+        
+
+
+        listaProdutos.addEventListener('click',function(event){
+            if(event.target.classList.contains('remover')){
+                const index = parseInt(event.target.getAttribute('data-index'));
+                removerProduto(index);
+            }
+        })
+   });
+   </script>
+
+
+
+
+    
+</body>
+</html>
